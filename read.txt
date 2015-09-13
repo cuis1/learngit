@@ -1,1 +1,2 @@
-yes365cc@gmail.com   91zipai
+Git is a distributed version control system.
+Git is free software.
