@@ -174,6 +174,37 @@ void cal_fitness()
 				else 
 				{
 					if(chr[i].mid[ctr] != 1)
+					{
+						fprintf(galog,"\nchr[%d].mid[%d]=%d  \n",i,ctr,chr[i].mid[ctr]);
+						fprintf(galog,"\nchr[%d].gen[%d][%d]=%d \n",i,ctr,k,chr[i].gen[ctr][k]);
+						int temp = -1;
+						for (int g = 2; g >= 0; g--)
+						{
+							if (chr[i].mid[g] == 0||chr[i].mid[g] == 1)
+							{
+								fprintf(galog,"\n输入chr[%d].mid[%d]=%d  \n",i,g,chr[i].mid[g]);
+								fprintf(galog,"\nCTR换到chr[%d].gen[%d][%d]=%d \n",i,g,k,chr[i].gen[g][k]);
+								temp = chr[i].gen[ctr][k];
+								chr[i].gen[ctr][k] = chr[i].gen[g][k];
+								chr[i].gen[g][k] = temp;
+								k =0;
+								for (int m = 0; m < LIN; m++)
+								{
+									chr[i].mid[m] = input[m][j];
+												}
+								for (int l = 0; l < LIN; l++)				
+								{
+									if (chr[i].gen[l][k] == 1)
+										ctr = l;
+									else if (chr[i].gen[l][k] == 0)
+										ze = l;
+									else
+										ncv = l;
+								}
+								break;
+							}
+						}
+					}
 					//2表示CV+，3表示CV，4表示CN
 					switch (chr[i].gen[ncv][k])
 					{
@@ -266,8 +297,7 @@ void cal_fitness()
 		
 		for(int k = 0; k < LIN;k++)
 		{
-			if (k%LIN == 0)
-					fprintf(galog,"\n*******************************\n");
+
 			for(int j = 0; j < ORAN;j++)
 			{ 
 				if (j%ORAN == 0)			   
@@ -275,6 +305,8 @@ void cal_fitness()
 				fprintf(galog,"%3d",chr[i].output[k][j]);
 					//fprintf(galog,"%4s",chr[i].gen[k][j]);
 			 }
+			if (k%LIN == 2)
+				fprintf(galog,"\n*******************************\n");
 		}
 	}
 }
@@ -283,7 +315,7 @@ void init()
 {
 	//char *NCV[NL][NR] = {{"CTR","CTR","CTR"},{"CV+","CV","CN"}};
 	char NCV[NL][NR] = {{1,1,1},{2,3,4}};
-	fprintf(galog,"初代种群\n");
+	//fprintf(galog,"初代种群\n");
 	int ran,lin,take;
 	double p;
 	for(int i=0;i<SIZE;i++)
@@ -334,8 +366,9 @@ void init()
 		}
   
 	}
-  print();
+  
   cal_fitness();
+  print();
 }
   int main()
 {
