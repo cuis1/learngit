@@ -97,28 +97,28 @@ void print()
 			{ 
 				if (j%RAN == 0)			   
 					fprintf(galog,"\n");
-				fprintf(galog,"%3d",chr[i].gen[k][j]);
-				//switch (chr[i].gen[k][j])
-				//{
-				//case 0:
-				//	fprintf(galog,"ZE  ");
-				//	break;
-				//case 1:
-				//	fprintf(galog,"CTR ");
-				//	break;
-				//case 2:
-				//	fprintf(galog,"CV+ ");
-				//	break;
-				//case 3:
-				//	fprintf(galog,"CV  ");
-				//	break;
-				//case 4:
-				//	fprintf(galog,"CN  ");
-				//	break;
-				//default:
-				//	fprintf(galog,"Null ");
-				//	break;
-				//}	
+				//fprintf(galog,"%3d",chr[i].gen[k][j]);
+			switch (chr[i].gen[k][j])
+				{
+				case 0:
+					fprintf(galog,"ZE  ");
+					break;
+				case 1:
+					fprintf(galog,"CTR ");
+					break;
+				case 2:
+					fprintf(galog,"CV+ ");
+					break;
+				case 3:
+					fprintf(galog,"CV  ");
+					break;
+				case 4:
+					fprintf(galog,"CN  ");
+					break;
+				default:
+					fprintf(galog,"Null ");
+					break;
+				}	
 			 }
 		}
 	}
@@ -163,7 +163,6 @@ void cal_fitness()
 					else
 						ncv = l;
 				}
-				
 				chr[i].output[ze][j] = chr[i].mid[ze];
 				if (chr[i].mid[ctr] == 0)
 				{
@@ -171,40 +170,8 @@ void cal_fitness()
 					chr[i].output[ncv][j] = chr[i].mid[ncv];
 				}
 				//计算控制位输入为1时受控门输出
-				else 
+				else if(chr[i].mid[ctr] == 1)
 				{
-					if(chr[i].mid[ctr] != 1)
-					{
-						fprintf(galog,"\nchr[%d].mid[%d]=%d  \n",i,ctr,chr[i].mid[ctr]);
-						fprintf(galog,"\nchr[%d].gen[%d][%d]=%d \n",i,ctr,k,chr[i].gen[ctr][k]);
-						int temp = -1;
-						for (int g = 2; g >= 0; g--)
-						{
-							if (chr[i].mid[g] == 0||chr[i].mid[g] == 1)
-							{
-								fprintf(galog,"\n输入chr[%d].mid[%d]=%d  \n",i,g,chr[i].mid[g]);
-								fprintf(galog,"\nCTR换到chr[%d].gen[%d][%d]=%d \n",i,g,k,chr[i].gen[g][k]);
-								temp = chr[i].gen[ctr][k];
-								chr[i].gen[ctr][k] = chr[i].gen[g][k];
-								chr[i].gen[g][k] = temp;
-								k =0;
-								for (int m = 0; m < LIN; m++)
-								{
-									chr[i].mid[m] = input[m][j];
-												}
-								for (int l = 0; l < LIN; l++)				
-								{
-									if (chr[i].gen[l][k] == 1)
-										ctr = l;
-									else if (chr[i].gen[l][k] == 0)
-										ze = l;
-									else
-										ncv = l;
-								}
-								break;
-							}
-						}
-					}
 					//2表示CV+，3表示CV，4表示CN
 					switch (chr[i].gen[ncv][k])
 					{
@@ -292,9 +259,41 @@ void cal_fitness()
 						break;
 					}
 				}
+				//除磷计算控制门输入为其他值（不为0或1）时的情况
+				else 
+				{
+					fprintf(galog,"\nchr[%d].mid[%d]=%d  \n",i,ctr,chr[i].mid[ctr]);
+					fprintf(galog,"\nchr[%d].gen[%d][%d]=%d \n",i,ctr,k,chr[i].gen[ctr][k]);
+					int temp = -1;
+					for (int g = 2; g >= 0; g--)
+					{
+						if (chr[i].mid[g] == 0||chr[i].mid[g] == 1)
+						{
+							fprintf(galog,"\n输入chr[%d].mid[%d]=%d  \n",i,g,chr[i].mid[g]);
+							fprintf(galog,"\nCTR换到chr[%d].gen[%d][%d]=%d \n",i,g,k,chr[i].gen[g][k]);
+							temp = chr[i].gen[ctr][k];
+							chr[i].gen[ctr][k] = chr[i].gen[g][k];
+							chr[i].gen[g][k] = temp;
+							k =-1;
+							for (int m = 0; m < LIN; m++)
+							{
+								chr[i].mid[m] = input[m][j];
+							}
+							//for (int l = 0; l < LIN; l++)				
+							//{
+							//	if (chr[i].gen[l][k] == 1)
+							//		ctr = l;
+							//	else if (chr[i].gen[l][k] == 0)
+							//		ze = l;
+							//	else
+							//		ncv = l;
+							//}
+							break;
+						}
+					}
+				}
 			}
-		}
-		
+		}	
 		for(int k = 0; k < LIN;k++)
 		{
 
@@ -366,7 +365,7 @@ void init()
 		}
   
 	}
-  
+    print();
   cal_fitness();
   print();
 }
